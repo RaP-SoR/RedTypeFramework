@@ -1,0 +1,51 @@
+{
+  "name": "redtypeframework",
+  "version": "0.0.1",
+  "description": "RedTypeFramework(RTF) is a framework for creating RedM resources with TypeScript and Vue 3",
+  "author": "RaPSoR",
+  "workspaces": [
+    "core",
+    "modules/*",
+    "resources/*",
+    "tools/*",
+    "ui"
+  ],
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:core && npm run build:ui",
+    "dev": "npm run dev:all",
+    "dev:all": "concurrently \"npm run dev:core\" \"npm run dev:ui\"",
+    "dev:core": "vite build --watch",
+    "dev:ui": "npm run dev -w ui",
+    "build:core": "vite build",
+    "build:ui": "npm run build -w ui",
+    "watch": "concurrently \"npm run watch:core\" \"npm run watch:ui\"",
+    "watch:core": "vite build --watch",
+    "watch:ui": "npm run watch -w ui",
+    "preview": "npm run preview -w ui",
+    "type-check": "vue-tsc --noEmit && npm run type-check -w ui"
+  },
+  "dependencies": {
+    "@citizenfx/client": "^2.0.14862-1",
+    "@citizenfx/server": "^2.0.14862-1",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "@types/node": "^16.18.38",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9",
+    "vite-plugin-commonjs": "^0.10.4",
+    "vite-plugin-vuetify": "1.0.2",
+    "vue-tsc": "^2.2.10"
+  },
+  "resolutions": {
+    "unplugin": "1.6.0",
+    "unplugin-auto-import": "0.16.7", 
+    "unplugin-vue-components": "0.25.2",
+    "unplugin-fonts": "1.0.3"
+  }
+}
