@@ -1,57 +1,72 @@
 <template>
-  <v-container class="d-flex fill-height">
-    <v-row justify="center" align="center">
-      <v-card elevation="2" width="500px" maxWidth="500px" class="px-5 py-5">
-        <v-card-title
-          >Demo Card
-          <span
-            ><v-icon color="primary" size="2rem">mdi-police-badge</v-icon></span
-          ></v-card-title
-        >
-        <v-card-subtitle>Demo Card</v-card-subtitle>
-        <div v-if="playerID">
-          <div>PlayerID: {{ playerID }}</div>
-        </div>
-        <v-alert type="error" dark shaped v-if="error">{{ error }}</v-alert>
-        <v-text-field
-          outlined
-          label="Your name goes here"
-          v-model="userName"
-        ></v-text-field>
-        <v-textarea
-          outlined
-          label="Your message goes here"
-          v-model="message"
-        ></v-textarea>
-        
-        <v-layout v-if="typeOfMessage" class="previewLayout">
-          <div>Color preview:</div>
-          <v-avatar :color="typeOfMessage"></v-avatar>
-        </v-layout>
-        <v-card-actions>
-          <v-btn
-            variant="elevated"
-            class="ml-auto"
-            color="primary"
-            @click="sendData"
-            >Send data</v-btn
-          >
-          <v-btn variant="elevated" elevated color="error" @click="exitUI"
-            >X</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-row>
-  </v-container>
+   <v-container class="d-flex fill-height">
+      <v-row justify="center" align="center">
+         <v-card elevation="2" width="500px" maxWidth="500px" class="px-5 py-5">
+            <v-card-title
+               >Demo Card
+               <span
+                  ><v-icon color="primary" size="2rem"
+                     >mdi-police-badge</v-icon
+                  ></span
+               ></v-card-title
+            >
+            <v-card-subtitle>Demo Card</v-card-subtitle>
+            <div v-if="playerID">
+               <div>PlayerID: {{ playerID }}</div>
+            </div>
+            <v-alert type="error" dark shaped v-if="error">{{ error }}</v-alert>
+            <v-text-field
+               outlined
+               label="Your name goes here"
+               v-model="userName"
+            ></v-text-field>
+            <v-textarea
+               outlined
+               label="Your message goes here"
+               v-model="message"
+            ></v-textarea>
+
+            <v-layout v-if="typeOfMessage" class="previewLayout">
+               <div>Color preview:</div>
+               <v-avatar :color="typeOfMessage"></v-avatar>
+            </v-layout>
+            <v-card-actions>
+               <v-btn
+                  variant="elevated"
+                  class="ml-auto"
+                  color="primary"
+                  @click="sendData"
+                  >Send data</v-btn
+               >
+               <v-btn variant="elevated" elevated color="error" @click="exitUI"
+                  >X</v-btn
+               >
+            </v-card-actions>
+         </v-card>
+      </v-row>
+   </v-container>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import { useGlobalStore } from "../stores/global";
 import api from "../api/axios";
-import { VAvatar, VAlert, VBtn, VCard, VCardActions, VCardSubtitle, VCardTitle, VContainer, VIcon, VLayout, VRow, VSelect, VTextField, VTextarea } from "vuetify/components";
+import {
+   VAvatar,
+   VAlert,
+   VBtn,
+   VCard,
+   VCardActions,
+   VCardSubtitle,
+   VCardTitle,
+   VContainer,
+   VIcon,
+   VLayout,
+   VRow,
+   VTextField,
+   VTextarea,
+} from "vuetify/components";
 
 const globalStore = useGlobalStore();
-const colorOptions = ref<string[]>(["success", "error", "warning", "primary"]);
 const typeOfMessage = ref<string>("");
 const error = ref<string>("");
 const userName = ref<string>("");
@@ -59,46 +74,46 @@ const message = ref<string>("");
 const playerID: number = globalStore.$state.playerID;
 
 const sendError = (text: string) => {
-  error.value = text;
-  setTimeout(() => {
-    error.value = "";
-  }, 3000);
+   error.value = text;
+   setTimeout(() => {
+      error.value = "";
+   }, 3000);
 };
 
 const sendData = async (): Promise<void> => {
-  if (userName.value.length < 3) {
-    return sendError("Your name should be longer than 2 characters.");
-  }
-  if (message.value.length < 4) {
-    return sendError("Your message should be longer than 3 characters.");
-  }
-  if (!typeOfMessage.value) {
-    return sendError("You must specify the type of message.");
-  }
+   if (userName.value.length < 3) {
+      return sendError("Your name should be longer than 2 characters.");
+   }
+   if (message.value.length < 4) {
+      return sendError("Your message should be longer than 3 characters.");
+   }
+   if (!typeOfMessage.value) {
+      return sendError("You must specify the type of message.");
+   }
 
-  try {
-    await api.post("receiveData", {
-      userName: userName.value,
-      message: message.value,
-      typeOfMessage: typeOfMessage.value,
-    });
-  } catch (error: any) {
-    await api.post("error", error);
-  }
+   try {
+      await api.post("receiveData", {
+         userName: userName.value,
+         message: message.value,
+         typeOfMessage: typeOfMessage.value,
+      });
+   } catch (error: any) {
+      await api.post("error", error);
+   }
 };
 
 const exitUI = async () => {
-  try {
-    await api.post("exitUI");
-  } catch (error: any) {
-    await api.post("error", error.message);
-  }
+   try {
+      await api.post("exitUI");
+   } catch (error: any) {
+      await api.post("error", error.message);
+   }
 };
 </script>
 <style scoped>
 .previewLayout {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+   display: flex;
+   align-items: center;
+   gap: 1rem;
 }
 </style>

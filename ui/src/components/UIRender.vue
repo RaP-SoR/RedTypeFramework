@@ -5,9 +5,6 @@
          :key="type"
          class="ui-container"
       >
-         <div class="ui-controls">
-            <button @click="closeUI(type)" class="close-btn">x</button>
-         </div>
          <component
             :is="getUIComponent(type)"
             v-bind="uiInstance || {}"
@@ -54,9 +51,7 @@ const closeUI = (type: string) => {
    emit("closeUI", type);
 };
 
-// Neue Handler-Funktion, die sowohl mit als auch ohne $event-Parameter umgehen kann
 const handleClose = (eventType?: string, fallbackType?: string) => {
-   // Wenn die Kindkomponente einen type mitsendet, verwende diesen, ansonsten nimm den aus dem v-for
    const typeToClose = eventType || fallbackType;
    if (typeToClose) {
       closeUI(typeToClose);

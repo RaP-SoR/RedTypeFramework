@@ -1,8 +1,10 @@
 <template>
-   <div v-if="isDev" class="dev-ui-list">
-      <h3>UI Komponenten</h3>
+   <div v-if="isDev" class="dev-ui-list" :style="positionStyle">
+      <div class="drag-handle" @mousedown="startDrag">
+         <span>UIs</span>
+         <div class="drag-icon">⋮⋮</div>
+      </div>
 
-      <!-- Gruppierte UIs -->
       <div
          v-for="(components, groupName) in groupedComponents"
          :key="groupName"
@@ -28,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 
 const props = defineProps({
    uiComponents: {
@@ -47,18 +49,82 @@ const props = defineProps({
 
 const emit = defineEmits(["toggleDevUI"]);
 
-// Gruppierte Komponenten nach Ordner/Modul
+const posX = ref(10);
+const posY = ref(10);
+const isDragging = ref(false);
+const dragOffsetX = ref(0);
+const dragOffsetY = ref(0);
+
+const positionStyle = computed(() => {
+   return {
+      left: `${posX.value}px`,
+      top: `${posY.value}px`,
+   };
+});
+
+const startDrag = (e: MouseEvent) => {
+   isDragging.value = true;
+   dragOffsetX.value = e.clientX - posX.value;
+   dragOffsetY.value = e.clientY - posY.value;
+   document.addEventListener("mousemove", onDrag);
+   document.addEventListener("mouseup", stopDrag);
+};
+
+const onDrag = (e: MouseEvent) => {
+   if (!isDragging.value) return;
+
+   let newX = e.clientX - dragOffsetX.value;
+   let newY = e.clientY - dragOffsetY.value;
+
+   const maxWidth = window.innerWidth - 200;
+   const maxHeight = window.innerHeight - 100;
+
+   newX = Math.max(0, Math.min(newX, maxWidth));
+   newY = Math.max(0, Math.min(newY, maxHeight));
+
+   posX.value = newX;
+   posY.value = newY;
+};
+
+const stopDrag = () => {
+   isDragging.value = false;
+   document.removeEventListener("mousemove", onDrag);
+   document.removeEventListener("mouseup", stopDrag);
+
+   try {
+      localStorage.setItem("uiListDevPosX", posX.value.toString());
+      localStorage.setItem("uiListDevPosY", posY.value.toString());
+   } catch (e) {
+      console.warn("Konnte Position nicht speichern", e);
+   }
+};
+
+onMounted(() => {
+   try {
+      const savedX = localStorage.getItem("uiListDevPosX");
+      const savedY = localStorage.getItem("uiListDevPosY");
+      if (savedX && savedY) {
+         posX.value = parseInt(savedX);
+         posY.value = parseInt(savedY);
+      }
+   } catch (e) {
+      console.warn("Konnte gespeicherte Position nicht laden", e);
+   }
+});
+
+onBeforeUnmount(() => {
+   document.removeEventListener("mousemove", onDrag);
+   document.removeEventListener("mouseup", stopDrag);
+});
+
 const groupedComponents = computed(() => {
    const groups: Record<string, string[]> = {};
 
    Object.keys(props.uiComponents).forEach((type) => {
-      // Versuche eine Gruppe zu finden (z.B. "inventory" aus "inventory-details")
       const dashIndex = type.indexOf("-");
       let groupName = "";
-
       if (dashIndex > 0) {
          groupName = type.substring(0, dashIndex);
-         // Entscheide, ob wir den vollständigen Namen oder nur den Teil nach dem Bindestrich zeigen
       }
 
       if (!groups[groupName]) {
@@ -71,12 +137,10 @@ const groupedComponents = computed(() => {
    return groups;
 });
 
-// Formatiert den Gruppennamen für bessere Lesbarkeit
 const formatGroupName = (groupName: string): string => {
    return groupName.charAt(0).toUpperCase() + groupName.slice(1);
 };
 
-// Zeigt nur den relevanten Teil des Komponentennamens an
 const formatComponentName = (type: string): string => {
    const dashIndex = type.indexOf("-");
    if (dashIndex > 0) {
@@ -85,7 +149,6 @@ const formatComponentName = (type: string): string => {
    return type;
 };
 
-// Delegiere die toggleDevUI-Funktion an die Elternkomponente
 const toggleDevUI = (type: string) => {
    emit("toggleDevUI", type);
 };
@@ -94,8 +157,6 @@ const toggleDevUI = (type: string) => {
 <style>
 .dev-ui-list {
    position: fixed;
-   top: 0;
-   left: 0;
    background-color: rgba(0, 0, 0, 0.8);
    color: white;
    padding: 10px;
@@ -105,6 +166,25 @@ const toggleDevUI = (type: string) => {
    border-radius: 4px;
    max-height: 80vh;
    overflow-y: auto;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+   user-select: none;
+}
+
+.drag-handle {
+   cursor: move;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding-bottom: 5px;
+   border-bottom: 2px solid rgba(255, 204, 0, 0.5);
+   margin-bottom: 10px;
+   font-weight: bold;
+}
+
+.drag-icon {
+   color: #ffcc00;
+   font-weight: bold;
+   letter-spacing: -3px;
 }
 
 .ui-group {

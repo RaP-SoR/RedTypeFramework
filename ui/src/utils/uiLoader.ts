@@ -1,8 +1,5 @@
 import { markRaw, reactive } from 'vue';
 
-/**
- * Lädt automatisch alle UI-Komponenten aus Unterordnern im views-Verzeichnis
- */
 export const loadUIComponents = async () => {
   const components: Record<string, any> = reactive({});
   

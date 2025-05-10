@@ -1,6 +1,5 @@
 <template>
    <v-app theme="dark">
-      <!-- UI List Dev -->
       <UIListDev
          v-if="isDev"
          :uiComponents="uiComponents"
