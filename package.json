@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "RedTypeFramework(RTF) is a framework for creating RedM resources with TypeScript and Vue 3",
   "author": "RaPSoR",
+  "private": true,
   "workspaces": [
     "core",
     "modules/*",
@@ -29,7 +30,8 @@
   "dependencies": {
     "@citizenfx/client": "^2.0.14862-1",
     "@citizenfx/server": "^2.0.14862-1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",
@@ -44,7 +46,7 @@
   },
   "resolutions": {
     "unplugin": "1.6.0",
-    "unplugin-auto-import": "0.16.7", 
+    "unplugin-auto-import": "0.16.7",
     "unplugin-vue-components": "0.25.2",
     "unplugin-fonts": "1.0.3"
   }

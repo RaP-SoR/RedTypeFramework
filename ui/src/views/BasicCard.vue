@@ -53,6 +53,7 @@
 import { ref } from "vue";
 import { useGlobalStore } from "../stores/global";
 import api from "../api/axios";
+import { VAvatar, VAlert, VBtn, VCard, VCardActions, VCardSubtitle, VCardTitle, VContainer, VIcon, VLayout, VRow, VSelect, VTextField, VTextarea } from "vuetify/components";
 
 const globalStore = useGlobalStore();
 const colorOptions = ref<string[]>(["success", "error", "warning", "primary"]);
