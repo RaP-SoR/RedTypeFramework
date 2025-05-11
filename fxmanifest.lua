@@ -6,6 +6,14 @@ author 'RaPSoR'
 description 'RedType Framework - A framework for RedM based on TypeScript'
 version '0.0.1'
 
+
+convar 'rtf:debug' 'true'
+convar 'rtf:db_host' 'localhost'
+convar 'rtf:db_port' '27017'
+convar 'rtf:db_name' 'redtype-framework'
+convar 'rtf:db_user' ''
+convar 'rtf:db_pass' ''
+
 server_script 'dist/server.js'
 client_script 'dist/client.js'
 shared_script 'dist/shared.js'
