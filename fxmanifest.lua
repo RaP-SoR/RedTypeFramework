@@ -14,9 +14,13 @@ convar 'rtf:db_name' 'redtype-framework'
 convar 'rtf:db_user' ''
 convar 'rtf:db_pass' ''
 
-server_script 'dist/server.js'
-client_script 'dist/client.js'
-shared_script 'dist/shared.js'
+shared_script 'dist/core/shared/shared.js'
+server_script 'dist/core/server/server.js'
+client_script 'dist/core/client/client.js'
+
+server_script 'dist/core/server/**/*.js'
+client_script 'dist/core/client/**/*.js'
+shared_script 'dist/core/shared/**/*.js'
 
 ui_page 'dist/ui/index.html'
 

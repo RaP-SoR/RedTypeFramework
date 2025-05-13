@@ -1,7 +1,7 @@
 import { ServerConfig } from "@rtf/shared/interfaces/ServerConfig";
-import { DatabaseFactory } from "./db/index";
+import { DatabaseFactory } from "./db/DatabaseFactory";
 import { IDatabaseProvider } from "@rtf/shared/interfaces/IDatabaseProvider";
-import { logError, logInfo } from "../shared/logs";
+import { logError, logInfo } from "@rtf/shared/logs";
 
 export class ServerCore {
   private config: ServerConfig;
@@ -15,16 +15,16 @@ export class ServerCore {
   public async start(): Promise<void> {
     logInfo("Starting RedType Framework Server...");
     await this.initializeDatabase();
-    logInfo("RedM Framework Server started successfully");
+    logInfo("Server started successfully");
   }
 
   public async stop(): Promise<void> {
-    logInfo("Stopping RedM Framework Server...");
-    
-    if (this.dbProvider && await this.dbProvider.isConnected()) {
+    logInfo("Stopping Server...");
+
+    if (this.dbProvider && (await this.dbProvider.isConnected())) {
       await this.dbProvider.disconnect();
     }
-    logInfo("RedM Framework Server stopped");
+    logInfo("Server stopped");
   }
 
   public getDatabaseProvider(): IDatabaseProvider {
@@ -45,7 +45,7 @@ export class ServerCore {
         this.config.database.provider,
         this.config.database
       );
-      
+
       await this.dbProvider.connect();
       logInfo("Database connection established");
     } catch (error) {
@@ -53,9 +53,8 @@ export class ServerCore {
       throw error;
     }
   }
-  
+
   public isDebugMode(): boolean {
     return this.config.debug;
   }
 }
- 

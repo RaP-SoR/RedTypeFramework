@@ -9,23 +9,23 @@
     "modules/*",
     "resources/*",
     "tools/*",
-    "ui"
+    "rtf-ui"
   ],
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:core && npm run build:ui",
-    "dev": "npm run dev:all",
-    "dev:all": "concurrently \"npm run dev:core\" \"npm run dev:ui\"",
+    "build": "yarn build:core && yarn build:ui",
+    "dev": "yarn dev:all",
+    "dev:all": "concurrently \"yarn dev:core\" \"yarn dev:ui\"",
     "dev:core": "vite build --watch",
-    "dev:ui": "npm run dev -w ui",
+    "dev:ui": "yarn workspace rtf-ui dev",
     "build:core": "vite build",
-    "build:ui": "npm run build -w ui",
-    "watch": "concurrently \"npm run watch:core\" \"npm run watch:ui\"",
+    "build:ui": "yarn workspace rtf-ui build",
+    "watch": "concurrently \"yarn watch:core\" \"yarn watch:ui\"",
     "watch:core": "vite build --watch",
-    "watch:ui": "npm run watch -w ui",
-    "preview": "npm run preview -w ui",
-    "type-check": "vue-tsc --noEmit && npm run type-check -w ui"
+    "watch:ui": "yarn workspace rtf-ui watch",
+    "preview": "yarn workspace rtf-ui preview",
+    "type-check": "vue-tsc --noEmit && yarn workspace rtf-ui type-check"
   },
   "dependencies": {
     "@citizenfx/client": "^2.0.14862-1",
@@ -49,5 +49,9 @@
     "unplugin-auto-import": "0.16.7",
     "unplugin-vue-components": "0.25.2",
     "unplugin-fonts": "1.0.3"
+  },
+  "engines": {
+    "yarn": ">=1.22.0",
+    "npm": "please-use-yarn"
   }
 }
