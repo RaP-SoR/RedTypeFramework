@@ -25,3 +25,7 @@ files {
     'dist/ui/assets/**/*',
     'dist/ui/favicon.ico'
 }
+
+dependencies {
+    'cfx-mongodb'
+}

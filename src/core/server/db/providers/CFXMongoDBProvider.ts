@@ -8,9 +8,14 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   private collectionName: string;
   private resourceName: string = "cfx-mongodb";
 
-  constructor(collectionName: string, resourceName: string = "mongodb") {
+  constructor(collectionName: string, resourceName: string = "cfx-mongodb") {
     this.collectionName = collectionName;
     this.resourceName = resourceName;
+    if (GetResourceState("cfx-mongodb") !== "started") {
+      console.error(
+        `[MongoDB-Provider] Error: cfx-mongodb resource is not started.`
+      );
+    }
   }
   public async exists(id: string): Promise<boolean> {
     throw new Error("Method not implemented.");
@@ -32,7 +37,10 @@ export class CFXMongoDBProvider<T extends IBaseModel>
 
       return this.mapDocumentToModel(result);
     } catch (error) {
-      console.error(`[MongoDB] Error finding document by ID ${id}:`, error);
+      console.error(
+        `[MongoDB-Provider] Error finding document by ID ${id}:`,
+        error
+      );
       throw error;
     }
   }
@@ -52,7 +60,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
         ? results.map((doc) => this.mapDocumentToModel(doc))
         : [];
     } catch (error) {
-      console.error("[MongoDB] Error finding documents:", error);
+      console.error("[MongoDB-Provider] Error finding documents:", error);
       throw error;
     }
   }
@@ -74,7 +82,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
 
       return this.mapDocumentToModel(result);
     } catch (error) {
-      console.error("[MongoDB] Error finding document:", error);
+      console.error("[MongoDB-Provider] Error finding document:", error);
       throw error;
     }
   }
@@ -103,7 +111,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
         ...doc,
       });
     } catch (error) {
-      console.error("[MongoDB] Error creating document:", error);
+      console.error("[MongoDB-Provider] Error creating document:", error);
       throw error;
     }
   }
@@ -136,7 +144,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
 
       return this.mapDocumentToModel(result);
     } catch (error) {
-      console.error(`[MongoDB] Error updating document ${id}:`, error);
+      console.error(`[MongoDB-Provider] Error updating document ${id}:`, error);
       throw error;
     }
   }
@@ -153,7 +161,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
 
       return result.deletedCount === 1;
     } catch (error) {
-      console.error(`[MongoDB] Error deleting document ${id}:`, error);
+      console.error(`[MongoDB-Provider] Error deleting document ${id}:`, error);
       throw error;
     }
   }
@@ -169,7 +177,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
         mongoFilter
       );
     } catch (error) {
-      console.error("[MongoDB] Error counting documents:", error);
+      console.error("[MongoDB-Provider] Error counting documents:", error);
       throw error;
     }
   }

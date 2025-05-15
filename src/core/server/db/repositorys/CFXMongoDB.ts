@@ -29,7 +29,10 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
 
       return this.mapDocumentToModel(result);
     } catch (error) {
-      console.error(`[MongoDB] Error finding document by ID ${id}:`, error);
+      console.error(
+        `[MongoDB-Repository] Error finding document by ID ${id}:`,
+        error
+      );
       throw error;
     }
   }
@@ -49,7 +52,7 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
         ? results.map((doc) => this.mapDocumentToModel(doc))
         : [];
     } catch (error) {
-      console.error("[MongoDB] Error finding documents:", error);
+      console.error("[MongoDB-Repository] Error finding documents:", error);
       throw error;
     }
   }
@@ -67,7 +70,7 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
         ? results.map((doc) => this.mapDocumentToModel(doc))
         : [];
     } catch (error) {
-      console.error("[MongoDB] Error finding documents:", error);
+      console.error("[MongoDB-Repository] Error finding documents:", error);
       throw error;
     }
   }
@@ -89,7 +92,7 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
 
       return this.mapDocumentToModel(result);
     } catch (error) {
-      console.error("[MongoDB] Error finding document:", error);
+      console.error("[MongoDB-Repository] Error finding document:", error);
       throw error;
     }
   }
@@ -118,7 +121,7 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
         ...doc,
       });
     } catch (error) {
-      console.error("[MongoDB] Error creating document:", error);
+      console.error("[MongoDB-Repository] Error creating document:", error);
       throw error;
     }
   }
@@ -138,7 +141,7 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
         },
       };
 
-      const result = await exports[this.resourceName].findOneAndUpdate(
+      const result = await exports[this.resourceName].updateOne(
         this.collectionName,
         { _id: id },
         updateDoc,
@@ -151,7 +154,10 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
 
       return this.mapDocumentToModel(result);
     } catch (error) {
-      console.error(`[MongoDB] Error updating document ${id}:`, error);
+      console.error(
+        `[MongoDB-Repository] Error updating document ${id}:`,
+        error
+      );
       throw error;
     }
   }
@@ -168,7 +174,10 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
 
       return result.deletedCount === 1;
     } catch (error) {
-      console.error(`[MongoDB] Error deleting document ${id}:`, error);
+      console.error(
+        `[MongoDB-Repository] Error deleting document ${id}:`,
+        error
+      );
       throw error;
     }
   }
@@ -184,7 +193,7 @@ export class CFXMongoDB<T extends IBaseModel> implements IRepository<T> {
         mongoFilter
       );
     } catch (error) {
-      console.error("[MongoDB] Error counting documents:", error);
+      console.error("[MongoDB-Repository] Error counting documents:", error);
       throw error;
     }
   }
