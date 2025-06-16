@@ -7,9 +7,9 @@ export interface IRepository<T extends IBaseModel> {
   findById(id: string): Promise<T | null>;
 
   /**
-   * Find documents matching a filter
+   * Find all documents matching a filter
    */
-  find(filter: Partial<T>): Promise<T[]>;
+  findAll(filter: Partial<T>): Promise<T[]>;
 
   /**
    * Find a single document matching a filter
@@ -17,14 +17,14 @@ export interface IRepository<T extends IBaseModel> {
   findOne(filter: Partial<T>): Promise<T | null>;
 
   /**
-   * Create a new document
+   * Insert a new document
    */
-  create(data: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T>;
+  insert(data: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T>;
 
   /**
    * Update a document by ID
    */
-  update(id: string, data: Partial<T>): Promise<T | null>;
+  update(id: string, data: Partial<T>): Promise<T | boolean | null>;
 
   /**
    * Delete a document by ID
@@ -35,6 +35,4 @@ export interface IRepository<T extends IBaseModel> {
    * Count documents matching a filter
    */
   count(filter?: Partial<T>): Promise<number>;
-
-  exists(id: string): Promise<boolean>;
 }

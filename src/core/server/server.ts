@@ -2,6 +2,7 @@ import { ServerConfig } from "@rtf/shared/interfaces/ServerConfig";
 import { ServerCore } from "./server-core";
 import { logInfo, logError } from "@rtf/shared/logs";
 import { IBaseModel } from "../shared/interfaces/IBaseModel";
+import { log } from "console";
 
 const serverConfig: ServerConfig = {
   debug: GetConvar("rtf:debug", "false") === "true",
@@ -73,25 +74,57 @@ interface User extends IBaseModel {
   username: string;
   password: string;
   email: string;
+  sort: string;
 }
 
 async function test() {
   const db = server.getDatabaseProvider();
+
+  console.log("Suche nach Benutzer 'testuser'...");
   const userExist = await db
     .getRepository<User>("users")
     .findOne({ username: "testuser" });
-  // logInfo(JSON.stringify(userExist));
+
+  /*
   if (!userExist) {
-    const user = db.getRepository<User>("users").create({
-      username: "testuser",
+    console.log("Benutzer nicht gefunden, erstelle neuen Benutzer...");
+    const user = await db.getRepository<User>("users").insert({
+      username: "testuser1",
       password: "testpassword",
       email: "",
+      sort: "test",
     });
+    console.log("Neuer Benutzer erstellt:", JSON.stringify(user));
   } else {
-    /* const updateUser = await db
+    console.log("Benutzer gefunden, ID:", userExist.id);
+    console.log("Aktualisiere Benutzer...");
+
+    // Alternativ direkt nach Benutzernamen statt ID aktualisieren
+    const updateUser = await db
       .getRepository<User>("users")
       .update(userExist.id, {
-        password: "newpassword",
-      });*/
+        password: "newpassword" + Math.random().toString(36).substring(7),
+        email: "mail_" + new Date().toISOString(),
+      });
+
+    if (updateUser) {
+      logInfo("Benutzer aktualisiert: " + JSON.stringify(updateUser));
+    } else {
+      logError("Fehler beim Aktualisieren des Benutzers");
+    }
+  }*/
+
+  const count = await db
+    .getRepository<User>("users")
+    .count({ username: "%test%" });
+  logInfo("Anzahl der Benutzer : " + count);
+  if (!userExist) {
+    logInfo("Benutzer existiert nicht, lösche Benutzer...");
+  }
+  const deleteUser = await db
+    .getRepository<User>("users")
+    .delete("682934ac5e5d5bb28744cb6a");
+  if (deleteUser) {
+    logInfo("Benutzer gelöscht");
   }
 }

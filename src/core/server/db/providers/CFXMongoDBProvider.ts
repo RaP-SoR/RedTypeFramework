@@ -1,6 +1,7 @@
 import { DBProviders } from "@/core/shared/interfaces/DBConfig";
 import { IBaseModel } from "@rtf/shared/interfaces/IBaseModel";
 import { IRepository } from "@rtf/shared/interfaces/IRepository";
+import { log } from "console";
 
 export class CFXMongoDBProvider<T extends IBaseModel>
   implements IRepository<T>
@@ -17,8 +18,26 @@ export class CFXMongoDBProvider<T extends IBaseModel>
       );
     }
   }
+  /**
+   * Check if a document with given ID exists
+   */
   public async exists(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    try {
+      const filter = { $or: [{ _id: id }, { id: id }] };
+
+      const count = await exports[this.resourceName].count(
+        this.collectionName,
+        filter
+      );
+
+      return count > 0;
+    } catch (error) {
+      console.error(
+        `[MongoDB-Provider] Error checking if document ${id} exists:`,
+        error
+      );
+      throw error;
+    }
   }
 
   /**
@@ -26,16 +45,16 @@ export class CFXMongoDBProvider<T extends IBaseModel>
    */
   public async findById(id: string): Promise<T | null> {
     try {
-      const result = await exports[this.resourceName].findById(
+      const result = await exports[this.resourceName].findOne(
         this.collectionName,
-        id
+        { _id: id }
       );
 
-      if (!result) {
+      if (!result || !result.success || !result.data) {
         return null;
       }
 
-      return this.mapDocumentToModel(result);
+      return this.mapDocumentToModel(result.data);
     } catch (error) {
       console.error(
         `[MongoDB-Provider] Error finding document by ID ${id}:`,
@@ -46,18 +65,20 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   }
 
   /**
-   * Find documents matching a filter
+   * Find all documents matching a filter
    */
-  public async find(filter: Partial<T>): Promise<T[]> {
+  public async findAll(filter: Partial<T>): Promise<T[]> {
     try {
       const mongoFilter = this.prepareFilter(filter);
-      const results = await exports[this.resourceName].find(
+      const response = await exports[this.resourceName].findAll(
         this.collectionName,
         mongoFilter
       );
-
-      return Array.isArray(results)
-        ? results.map((doc) => this.mapDocumentToModel(doc))
+      if (!response || !response.success || !response.data) {
+        return [];
+      }
+      return Array.isArray(response.data)
+        ? response.data.map((doc: any) => this.mapDocumentToModel(doc))
         : [];
     } catch (error) {
       console.error("[MongoDB-Provider] Error finding documents:", error);
@@ -71,16 +92,21 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   public async findOne(filter: Partial<T>): Promise<T | null> {
     try {
       const mongoFilter = this.prepareFilter(filter);
-      const result = await exports[this.resourceName].findOne(
+      const response = await exports[this.resourceName].find(
         this.collectionName,
         mongoFilter
       );
 
-      if (!result) {
+      if (!response || !response.success || !response.data) {
         return null;
       }
 
-      return this.mapDocumentToModel(result);
+      // Sicherstellen, dass response.data eine _id hat
+      if (response.data && !response.data._id && response.data.id) {
+        response.data._id = response.data.id;
+      }
+
+      return this.mapDocumentToModel(response.data);
     } catch (error) {
       console.error("[MongoDB-Provider] Error finding document:", error);
       throw error;
@@ -90,7 +116,7 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   /**
    * Create a new document
    */
-  public async create(
+  public async insert(
     data: Omit<T, "id" | "createdAt" | "updatedAt">
   ): Promise<T> {
     try {
@@ -101,10 +127,14 @@ export class CFXMongoDBProvider<T extends IBaseModel>
         updatedAt: now,
       };
 
-      const result = await exports[this.resourceName].insertOne(
+      const result = await exports[this.resourceName].insert(
         this.collectionName,
         doc
       );
+
+      if (!result || !result.success) {
+        throw new Error("Failed to insert document");
+      }
 
       return this.mapDocumentToModel({
         _id: result.insertedId,
@@ -119,9 +149,12 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   /**
    * Update a document by ID
    */
-  public async update(id: string, data: Partial<T>): Promise<T | null> {
+  public async update(
+    id: string,
+    data: Partial<T>,
+    returnDoc: boolean = false
+  ): Promise<T | boolean | null> {
     try {
-      // Ensure we don't override id, createdAt
       const { id: _, createdAt: __, ...updateData } = data as any;
 
       const updateDoc = {
@@ -131,18 +164,20 @@ export class CFXMongoDBProvider<T extends IBaseModel>
         },
       };
 
-      const result = await exports[this.resourceName].findOneAndUpdate(
+      const result = await exports[this.resourceName].update(
         this.collectionName,
         { _id: id },
-        updateDoc,
-        { returnDocument: "after" }
+        updateDoc
       );
 
-      if (!result) {
-        return null;
+      if (result && result.success && result.modifiedCount > 0) {
+        if (returnDoc) {
+          return await this.findById(id);
+        }
+        return true;
       }
 
-      return this.mapDocumentToModel(result);
+      return null;
     } catch (error) {
       console.error(`[MongoDB-Provider] Error updating document ${id}:`, error);
       throw error;
@@ -152,13 +187,53 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   /**
    * Delete a document by ID
    */
+  /**
+   * Delete a document by ID
+   */
   public async delete(id: string): Promise<boolean> {
     try {
-      const result = await exports[this.resourceName].deleteOne(
-        this.collectionName,
-        { _id: id }
-      );
+      // Erstelle den Filter mit ID
+      const filter = { _id: id };
 
+      // Versuch, das Dokument zu löschen
+      const result = await exports[this.resourceName].delete(
+        this.collectionName,
+        filter
+      );
+      console.log("Collection:", this.collectionName);
+      console.log(
+        `[MongoDB-Provider] Trying to delete document with ID: ${id}`
+      );
+      console.log(`[MongoDB-Provider] Filter used:`, { _id: id });
+      // Prüfe auf Erfolg und Fehler
+      if (!result) {
+        console.error(
+          `[MongoDB-Provider] Error deleting document ${id}: Keine Antwort vom Provider`
+        );
+        return false;
+      }
+
+      if (!result.success) {
+        console.error(
+          `[MongoDB-Provider] Error deleting document ${id}: ${
+            result.error || "Unbekannter Fehler"
+          }`
+        );
+        return false;
+      }
+
+      // Erfolg nur, wenn genau ein Dokument gelöscht wurde
+      if (result.deletedCount === 1) {
+        console.log(`[MongoDB-Provider] Document ${id} deleted successfully`);
+        return true;
+      }
+
+      // Falls kein oder mehrere Dokumente gelöscht wurden
+      console.warn(
+        `[MongoDB-Provider] Warning: ${
+          result.deletedCount || 0
+        } documents deleted with ID ${id}`
+      );
       return result.deletedCount === 1;
     } catch (error) {
       console.error(`[MongoDB-Provider] Error deleting document ${id}:`, error);
@@ -172,10 +247,14 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   public async count(filter: Partial<T> = {}): Promise<number> {
     try {
       const mongoFilter = this.prepareFilter(filter);
-      return await exports[this.resourceName].countDocuments(
+      const result = await exports[this.resourceName].count(
         this.collectionName,
         mongoFilter
       );
+      console.log(
+        `[MongoDB-Provider] Count result: ${result.data} documents found`
+      );
+      return result.data || 0;
     } catch (error) {
       console.error("[MongoDB-Provider] Error counting documents:", error);
       throw error;
@@ -188,13 +267,11 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   private prepareFilter(filter: Partial<T>): Record<string, any> {
     const mongoFilter: Record<string, any> = {};
 
-    // Handle ID field conversion for consistency
     if ((filter as any).id) {
       mongoFilter._id = (filter as any).id;
       delete (filter as any).id;
     }
 
-    // Copy remaining filter properties
     return { ...mongoFilter, ...filter };
   }
 
@@ -204,12 +281,31 @@ export class CFXMongoDBProvider<T extends IBaseModel>
   private mapDocumentToModel(doc: any): T {
     if (!doc) return null as unknown as T;
 
-    const { _id, ...data } = doc;
+    let id: string | null = null;
 
-    return {
+    if (doc._id) {
+      if (typeof doc._id === "string") {
+        id = doc._id;
+      } else if (doc._id.toString && typeof doc._id.toString === "function") {
+        id = doc._id.toString();
+      } else if (doc._id.$oid) {
+        id = doc._id.$oid;
+      }
+    } else if (doc.id) {
+      if (typeof doc.id === "string") {
+        id = doc.id;
+      } else if (doc.id.toString && typeof doc.id.toString === "function") {
+        id = doc.id.toString();
+      }
+    }
+
+    const { _id, id: docId, ...data } = doc;
+
+    const result = {
       ...data,
-      id: _id.toString ? _id.toString() : _id,
+      id: id || null,
     } as T;
+    return result;
   }
   getConnection(): any {
     return null;
