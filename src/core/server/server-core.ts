@@ -1,7 +1,7 @@
-import { ServerConfig } from "@rtf/shared/interfaces/ServerConfig";
+import { ServerConfig } from "@ctf/shared/interfaces/ServerConfig";
 import { DatabaseFactory } from "./db/DatabaseFactory";
-import { IDatabaseProvider } from "@rtf/shared/interfaces/IDatabaseProvider";
-import { logError, logInfo } from "@rtf/shared/logs";
+import { IDatabaseProvider } from "@ctf/shared/interfaces/IDatabaseProvider";
+import { logError, logInfo } from "@ctf/shared/logs";
 
 export class ServerCore {
   private config: ServerConfig;

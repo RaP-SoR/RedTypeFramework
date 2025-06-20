@@ -16,13 +16,9 @@
     "outDir": "./dist",
     "paths": {
       "@/*": ["src/*"],
-      "@rtf/*": ["src/core/*"],
+      "@ctf/*": ["src/core/*"]
     },
-    "types": [
-      "@citizenfx/client",
-      "@citizenfx/server",
-      "node"
-    ]
+    "types": ["@citizenfx/client", "@citizenfx/server", "node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

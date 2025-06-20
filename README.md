@@ -1,6 +1,6 @@
-﻿# RedM Framework
+﻿# Cfx Framework
 
-A modular, high-performance TypeScript framework for RedM.
+A modular, high-performance TypeScript framework for Cfx(FiveM/RedM).
 
 ## Project Structure
 
@@ -12,18 +12,21 @@ A modular, high-performance TypeScript framework for RedM.
 ## Getting Started
 
 1. Install dependencies
+
 ```
-npm install
+yarn install
 ```
 
 2. Build the project
+
 ```
-npm run build
+yarn build
 ```
 
 3. Run development mode
+
 ```
-npm run dev
+yarn dev
 ```
 
 ## Module Development

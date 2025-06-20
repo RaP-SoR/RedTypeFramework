@@ -1,7 +1,7 @@
 {
-  "name": "redtypeframework",
+  "name": "cfxtypeframework",
   "version": "0.0.1",
-  "description": "RedTypeFramework(RTF) is a framework for creating RedM resources with TypeScript and Vue 3",
+  "description": "CFXTypeFramework(CTF) is a framework for creating Cfx resources with TypeScript and Vue 3",
   "author": "RaPSoR",
   "private": true,
   "workspaces": [
@@ -9,7 +9,7 @@
     "modules/*",
     "resources/*",
     "tools/*",
-    "rtf-ui"
+    "cfx-ui"
   ],
   "type": "commonjs",
   "main": "index.js",
@@ -18,14 +18,14 @@
     "dev": "yarn dev:all",
     "dev:all": "concurrently \"yarn dev:core\" \"yarn dev:ui\"",
     "dev:core": "vite build --watch",
-    "dev:ui": "yarn workspace rtf-ui dev",
+    "dev:ui": "yarn workspace cfx-ui dev",
     "build:core": "vite build",
-    "build:ui": "yarn workspace rtf-ui build",
+    "build:ui": "yarn workspace cfx-ui build",
     "watch": "concurrently \"yarn watch:core\" \"yarn watch:ui\"",
     "watch:core": "vite build --watch",
-    "watch:ui": "yarn workspace rtf-ui watch",
-    "preview": "yarn workspace rtf-ui preview",
-    "type-check": "vue-tsc --noEmit && yarn workspace rtf-ui type-check"
+    "watch:ui": "yarn workspace cfx-ui watch",
+    "preview": "yarn workspace cfx-ui preview",
+    "type-check": "vue-tsc --noEmit && yarn workspace cfx-ui type-check"
   },
   "dependencies": {
     "@citizenfx/client": "^2.0.14862-1",

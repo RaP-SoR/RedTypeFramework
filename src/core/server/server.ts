@@ -1,6 +1,6 @@
-import { ServerConfig } from "@rtf/shared/interfaces/ServerConfig";
+import { ServerConfig } from "@ctf/shared/interfaces/ServerConfig";
 import { ServerCore } from "./server-core";
-import { logInfo, logError } from "@rtf/shared/logs";
+import { logInfo, logError } from "@ctf/shared/logs";
 import { IBaseModel } from "../shared/interfaces/IBaseModel";
 import { log } from "console";
 

@@ -1,4 +1,4 @@
-import { DbConfig } from "@rtf/shared/interfaces/DBConfig";
+import { DbConfig } from "@ctf/shared/interfaces/DBConfig";
 
 export interface ServerConfig {
   debug: boolean;
