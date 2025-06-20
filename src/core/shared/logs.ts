@@ -1,28 +1,28 @@
 export function log(message: any, args?: any): void {
   if (args === undefined) {
-    console.log(`[RedType Framework] ${message}`);
+    console.log(`[CFXType Framework] ${message}`);
     return;
   }
-  console.log(`[RedType Framework] ${message} ${args}`);
+  console.log(`[CFXType Framework] ${message} ${args}`);
 }
 export function logError(message: any, args?: any): void {
   if (args === undefined) {
-    console.error(`[RedType Framework] ${message}`);
+    console.error(`[CFXType Framework] ${message}`);
     return;
   }
-  console.error(`[RedType Framework] ${message} ${args}`);
+  console.error(`[CFXType Framework] ${message} ${args}`);
 }
 export function logWarning(message: any, args?: any): void {
   if (args === undefined) {
-    console.warn(`[RedType Framework] ${message}`);
+    console.warn(`[CFXType Framework] ${message}`);
     return;
   }
-  console.warn(`[RedType Framework] ${message} ${args}`);
+  console.warn(`[CFXType Framework] ${message} ${args}`);
 }
 export function logInfo(message: any, args?: any): void {
   if (args === undefined) {
-    console.info(`[RedType Framework] ${message}`);
+    console.info(`[CFXType Framework] ${message}`);
     return;
   }
-  console.info(`[RedType Framework] ${message} ${args}`);
+  console.info(`[CFXType Framework] ${message} ${args}`);
 }

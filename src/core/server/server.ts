@@ -2,18 +2,17 @@ import { ServerConfig } from "@ctf/shared/interfaces/ServerConfig";
 import { ServerCore } from "./server-core";
 import { logInfo, logError } from "@ctf/shared/logs";
 import { IBaseModel } from "../shared/interfaces/IBaseModel";
-import { log } from "console";
 
 const serverConfig: ServerConfig = {
-  debug: GetConvar("rtf:debug", "false") === "true",
+  debug: GetConvar("ctf:debug", "false") === "true",
   serverVersion: GetResourceMetadata(GetCurrentResourceName(), "version", 0),
   database: {
     provider: "cfxmongodb",
-    host: GetConvar("rtf:db_host", "localhost"),
+    host: GetConvar("ctf:db_host", "192.168.178.209"),
     port: parseInt(GetConvar("rtf:db_port", "27017")),
-    database: GetConvar("rtf:db_name", "redtype-framework"),
-    username: GetConvar("rtf:db_user", ""),
-    password: GetConvar("rtf:db_pass", ""),
+    database: GetConvar("ctf:db_name", "fivem_dev"),
+    username: GetConvar("ctf:db_user", ""),
+    password: GetConvar("ctf:db_pass", ""),
   },
 };
 
@@ -25,10 +24,10 @@ if (serverConfig.database.provider === "cfxmongodb") {
     server
       .start()
       .then(() => {
-        logInfo("RedType Framework Server erfolgreich gestartet");
+        logInfo("CFXType Framework Server erfolgreich gestartet");
       })
       .catch((err) =>
-        logError("Fehler beim Starten des RedType Framework Servers", err)
+        logError("Fehler beim Starten des CFXType Framework Servers", err)
       );
   });
 } else {
@@ -38,10 +37,10 @@ if (serverConfig.database.provider === "cfxmongodb") {
       server
         .start()
         .then(() => {
-          logInfo("RedType Framework Server erfolgreich gestartet");
+          logInfo("CFXType Framework Server erfolgreich gestartet");
         })
         .catch((err) =>
-          logError("Fehler beim Starten des RedType Framework Servers", err)
+          logError("Fehler beim Starten des CFXType Framework Servers", err)
         );
     }
   });
@@ -52,23 +51,23 @@ on("onResourceStop", (resourceName: string) => {
     server
       .stop()
       .then(() =>
-        logInfo("RedType Framework Server erfolgreich heruntergefahren")
+        logInfo("CFXType Framework Server erfolgreich heruntergefahren")
       )
       .catch((err) =>
         logError(
-          "Fehler beim Herunterfahren des RedType Framework Servers",
+          "Fehler beim Herunterfahren des CFXType Framework Servers",
           err
         )
       );
   }
 });
 
-exports("rtf:getServerInstance", () => server);
+exports("ctf:getServer", () => server);
 
 /// Test Code
 const timer = setTimeout(() => {
   test();
-}, 2000);
+}, 5000);
 
 interface User extends IBaseModel {
   username: string;

@@ -1,5 +1,5 @@
 /**
- * RedType Framework - Hot Reload Script
+ * CFXType Framework - Hot Reload Script
  * Restarts resources through txAdmin API
  */
 

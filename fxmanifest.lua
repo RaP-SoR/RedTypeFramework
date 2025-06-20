@@ -7,12 +7,12 @@ description 'CFXType Framework - A framework for Cfx based on TypeScript'
 version '0.0.1'
 
 
-convar 'rtf:debug' 'true'
-convar 'rtf:db_host' 'localhost'
-convar 'rtf:db_port' '27017'
-convar 'rtf:db_name' 'redtype-framework'
-convar 'rtf:db_user' ''
-convar 'rtf:db_pass' ''
+convar 'ctf:debug' 'true'
+convar 'ctf:db_host' 'localhost'
+convar 'ctf:db_port' '27017'
+convar 'ctf:db_name' 'fivem_dev'
+convar 'ctf:db_user' ''
+convar 'ctf:db_pass' ''
 
 server_script 'dist/core/server/**/*.js'
 client_script 'dist/core/client/**/*.js'

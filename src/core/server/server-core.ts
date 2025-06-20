@@ -9,11 +9,11 @@ export class ServerCore {
 
   constructor(config: ServerConfig) {
     this.config = config;
-    logInfo("RedType Framework Server initialized");
+    logInfo("CFXType Framework Server initialized");
   }
 
   public async start(): Promise<void> {
-    logInfo("Starting RedType Framework Server...");
+    logInfo("Starting CFXType Framework Server...");
     await this.initializeDatabase();
     logInfo("Server started successfully");
   }
