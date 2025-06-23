@@ -7,14 +7,14 @@ import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
-  base: "./", // Wichtig für relative Pfade in RedM
+  base: "/", // Für FiveM richtig setzen
   plugins: [
     Vue({
       template: { transformAssetUrls },
     }),
     Vuetify(),
     Components(),
-   
+
     ViteFonts({
       google: {
         families: [
@@ -42,29 +42,28 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-  },
-  // Build-Konfiguration für RedM Integration
+  }, // Build-Konfiguration für RedM Integration
   build: {
-    outDir: '../dist/ui', // Ausgabe im RedM-Resource-Ordner
-    emptyOutDir: true,    // Leert den Ausgabeordner vor dem Build
-    sourcemap: false,     // Für Produktion deaktivieren
-    minify: true,         // Dateigröße reduzieren
+    outDir: "../dist/ui", // Ausgabe im RedM-Resource-Ordner
+    emptyOutDir: true, // Leert den Ausgabeordner vor dem Build
+    sourcemap: false, // Für Produktion deaktivieren
+    minify: true, // Dateigröße reduzieren
     // CSS-Einstellungen
     cssCodeSplit: true,
     // Target für moderne Browser
-    target: 'esnext',
+    target: "esnext",
     rollupOptions: {
       output: {
-        // Asset-Ordner für bessere Organisation
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
+        // KEINE Hashes für FiveM/RedM - vereinfacht Pfad-Management
+        assetFileNames: "assets/[name][extname]",
+        chunkFileNames: "assets/[name].js",
+        entryFileNames: "assets/[name].js",
         // Größere Chunks vermeiden
         manualChunks: {
-          vue: ['vue', 'vue-router', 'pinia'],
-          vuetify: ['vuetify']
-        }
-      }
-    }
-  }
+          vue: ["vue", "vue-router", "pinia"],
+          vuetify: ["vuetify"],
+        },
+      },
+    },
+  },
 });

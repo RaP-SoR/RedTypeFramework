@@ -1,7 +1,6 @@
-import { DBProviders } from "@/core/shared/interfaces/DBConfig";
-import { IBaseModel } from "@ctf/shared/interfaces/IBaseModel";
-import { IRepository } from "@ctf/shared/interfaces/IRepository";
-import { log } from "console";
+import { DBProviders } from "@shared/interfaces/DBConfig";
+import { IBaseModel } from "@shared/interfaces/IBaseModel";
+import { IRepository } from "@shared/interfaces/IRepository";
 
 export class CFXMongoDBProvider<T extends IBaseModel>
   implements IRepository<T>

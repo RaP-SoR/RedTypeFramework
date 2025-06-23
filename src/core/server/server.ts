@@ -1,15 +1,18 @@
-import { ServerConfig } from "@ctf/shared/interfaces/ServerConfig";
 import { ServerCore } from "./server-core";
-import { logInfo, logError } from "@ctf/shared/logs";
+import { EntityManager } from "./entity/entityManager";
+import { ServerConfig } from "../shared/interfaces/ServerConfig";
+import { logError, logInfo } from "../shared/logs";
 import { IBaseModel } from "../shared/interfaces/IBaseModel";
+import { IEntity } from "../shared/interfaces/IEntity";
+import { Vector3 } from "../shared/Vector3";
 
 const serverConfig: ServerConfig = {
   debug: GetConvar("ctf:debug", "false") === "true",
   serverVersion: GetResourceMetadata(GetCurrentResourceName(), "version", 0),
   database: {
     provider: "cfxmongodb",
-    host: GetConvar("ctf:db_host", "192.168.178.209"),
-    port: parseInt(GetConvar("rtf:db_port", "27017")),
+    host: GetConvar("ctf:db_host", "localhost"),
+    port: parseInt(GetConvar("ctf:db_port", "27017")),
     database: GetConvar("ctf:db_name", "fivem_dev"),
     username: GetConvar("ctf:db_user", ""),
     password: GetConvar("ctf:db_pass", ""),
@@ -17,7 +20,7 @@ const serverConfig: ServerConfig = {
 };
 
 const server = new ServerCore(serverConfig);
-
+/*
 if (serverConfig.database.provider === "cfxmongodb") {
   onNet("cfx-mongodb:connected", () => {
     logInfo("Ressource gestartet by Cfx-MongoDB, initialisiere Server...");
@@ -61,12 +64,43 @@ on("onResourceStop", (resourceName: string) => {
       );
   }
 });
+*/
+on("onResourceStart", (resourceName: string) => {
+  if (resourceName === GetCurrentResourceName()) {
+    logInfo("Ressource gestartet, initialisiere Server...");
+    server
+      .start()
+      .then(() => {
+        logInfo("CFXType Framework Server erfolgreich gestartet");
+      })
+      .catch((err) =>
+        logError("Fehler beim Starten des CFXType Framework Servers", err)
+      );
+  }
+});
 
+on("onResourceStop", (resourceName: string) => {
+  if (resourceName === GetCurrentResourceName()) {
+    logInfo("Ressource wird gestoppt, fahre Server herunter...");
+    server
+      .stop()
+      .then(() =>
+        logInfo("CFXType Framework Server erfolgreich heruntergefahren")
+      )
+      .catch((err) =>
+        logError(
+          "Fehler beim Herunterfahren des CFXType Framework Servers",
+          err
+        )
+      );
+  }
+});
 exports("ctf:getServer", () => server);
 
 /// Test Code
+
 const timer = setTimeout(() => {
-  test();
+  // test();
 }, 5000);
 
 interface User extends IBaseModel {
@@ -77,6 +111,27 @@ interface User extends IBaseModel {
 }
 
 async function test() {
+  const blip: IEntity = {
+    id: "blip_1",
+    name: "Test Blip",
+    pos: new Vector3(100, 100, 100),
+    type: "blip",
+    streamDistance: 100,
+    dimension: 0,
+    scale: 1.0,
+    data: {
+      sprite: 1,
+      color: 2,
+      alpha: 255,
+      shortRange: true,
+      crew: false,
+      blipId: 12345,
+      display: 2,
+    },
+  };
+
+  EntityManager.add(blip);
+
   const db = server.getDatabaseProvider();
 
   console.log("Suche nach Benutzer 'testuser'...");

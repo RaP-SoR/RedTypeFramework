@@ -19,7 +19,7 @@
     "dev:all": "concurrently \"yarn dev:core\" \"yarn dev:ui\"",
     "dev:core": "vite build --watch",
     "dev:ui": "yarn workspace cfx-ui dev",
-    "build:core": "vite build",
+    "build:core": "node build.js",
     "build:ui": "yarn workspace cfx-ui build",
     "watch": "concurrently \"yarn watch:core\" \"yarn watch:ui\"",
     "watch:core": "vite build --watch",

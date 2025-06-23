@@ -9,17 +9,41 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "skipLibCheck": true,
     "noEmit": false,
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
-      "@/*": ["src/*"],
-      "@ctf/*": ["src/core/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@ctf/*": [
+        "src/core/*"
+      ],
+      "@shared/*": [
+        "src/core/shared/*"
+      ],
+      "@client/*": [
+        "src/client/*"
+      ],
+      "@server/*": [
+        "src/server/*"
+      ],
     },
-    "types": ["@citizenfx/client", "@citizenfx/server", "node"]
+    "types": [
+      "@citizenfx/client",
+      "@citizenfx/server",
+      "node"
+    ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

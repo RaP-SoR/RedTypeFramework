@@ -1,6 +1,6 @@
-import { IDatabaseProvider } from "@ctf/shared/interfaces/IDatabaseProvider";
-import { DBProviders, DbConfig } from "@ctf/shared/interfaces/DBConfig";
-import { IBaseModel } from "@/core/shared/interfaces/IBaseModel";
+import { IDatabaseProvider } from "@shared/interfaces/IDatabaseProvider";
+import { DBProviders, DbConfig } from "@shared/interfaces/DBConfig";
+import { IBaseModel } from "@shared/interfaces/IBaseModel";
 
 import { CFXMongoDBProvider } from "./providers/CFXMongoDBProvider";
 
