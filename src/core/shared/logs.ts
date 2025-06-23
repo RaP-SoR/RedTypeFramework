@@ -26,3 +26,5 @@ export function logInfo(message: any, args?: any): void {
   }
   console.info(`[CFXType Framework] ${message} ${args}`);
 }
+
+console.info(`[CFXType Framework] Logs initialized`);

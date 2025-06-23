@@ -1,4 +1,4 @@
-import { Vector3 } from "@shared/Vector3";
+import { CVector3 } from "@shared/CVector3";
 import { IEntity } from "@shared/interfaces/IEntity";
 
 let createdBlips: Array<IEntity> = [];
@@ -51,16 +51,15 @@ export class EntityBlip {
     }
   }
 }
-
 setInterval(async () => {
   const [x, y, z] = GetEntityCoords(PlayerPedId(), false);
   createdBlips.forEach((blip) => {
-    if (blip.pos.distanceTo(new Vector3(x, y, z)) > blip.streamDistance) {
+    if (blip.pos.distanceTo(new CVector3(x, y, z)) > blip.streamDistance) {
       EntityBlip.delete(blip.id);
     }
   });
   blips.forEach((blip) => {
-    if (blip.pos.distanceTo(new Vector3(x, y, z)) <= blip.streamDistance) {
+    if (blip.pos.distanceTo(new CVector3(x, y, z)) <= blip.streamDistance) {
       EntityBlip.create(blip);
     }
   });

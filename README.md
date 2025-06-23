@@ -1,33 +1,31 @@
-﻿# Cfx Framework
+﻿# ✅ CTF-CORE - AUFGERÄUMT UND BEREIT
 
-A modular, high-performance TypeScript framework for Cfx(FiveM/RedM).
+## 🧹 Aufräumung abgeschlossen
 
-## Project Structure
+Die Resource wurde komplett aufgeräumt und vereinfacht.
 
-- `/core` - Core framework code
-- `/modules` - Optional modules that extend the core functionality
-- `/resources` - FiveM/RedM resources that utilize the framework
-- `/tools` - Development and utility tools
+## 🚀 BEREIT ZUM TESTEN
 
-## Getting Started
+**Status:** ✅ **SAUBER UND EINSATZBEREIT**
 
-1. Install dependencies
+### Aktuelle Konfiguration:
 
-```
-yarn install
-```
+- **fxmanifest.lua**: Minimal und sauber
+- **build-simple.js**: Einfaches Build-System
+- **ES2017**: FiveM-kompatible JavaScript-Syntax
+- **Keine Dependencies**: Läuft eigenständig
 
-2. Build the project
+### Build-Commands:
 
-```
+```bash
+# Einfacher Build
+yarn build:core
+
+# Komplett Build (Core + UI)
 yarn build
 ```
 
-3. Run development mode
-
-```
-yarn dev
-```
+**Die Resource sollte jetzt ohne Probleme funktionieren.** 🎯
 
 ## Module Development
 

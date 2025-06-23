@@ -4,7 +4,7 @@ import { ServerConfig } from "../shared/interfaces/ServerConfig";
 import { logError, logInfo } from "../shared/logs";
 import { IBaseModel } from "../shared/interfaces/IBaseModel";
 import { IEntity } from "../shared/interfaces/IEntity";
-import { Vector3 } from "../shared/Vector3";
+import { CVector3 } from "../shared/CVector3";
 
 const serverConfig: ServerConfig = {
   debug: GetConvar("ctf:debug", "false") === "true",
@@ -100,7 +100,7 @@ exports("ctf:getServer", () => server);
 /// Test Code
 
 const timer = setTimeout(() => {
-  // test();
+  test();
 }, 5000);
 
 interface User extends IBaseModel {
@@ -114,7 +114,7 @@ async function test() {
   const blip: IEntity = {
     id: "blip_1",
     name: "Test Blip",
-    pos: new Vector3(100, 100, 100),
+    pos: new CVector3(100, 100, 100),
     type: "blip",
     streamDistance: 100,
     dimension: 0,

@@ -1,4 +1,4 @@
-import { Vector3 } from "../Vector3";
+import { CVector3 } from "../CVector3";
 
 export type EntityType =
   | "player"
@@ -12,8 +12,8 @@ export type EntityType =
 export interface IEntity {
   id: string;
   name?: string;
-  pos: Vector3;
-  rot?: Vector3;
+  pos: CVector3;
+  rot?: CVector3;
   type: EntityType;
   streamDistance: number;
   dimension?: number;

@@ -1,1 +1,1 @@
-import "./entityManger/entityManager";
+import "./entityManager/entityManager";
