@@ -1,17 +1,20 @@
 import { IEntity } from "@shared/interfaces/IEntity";
 import { EntityBlip } from "./blip";
 import { EVENTS } from "@shared/events/server";
+import { CVector3 } from "@shared/CVector3";
 
+let cliententities: Map<string, IEntity> = new Map();
 export class ClientEntityManager {
-  private cliententities: Map<string, IEntity> = new Map();
-
-  add(entity: IEntity): void {
-    if (this.cliententities.has(entity.id)) {
+  static add(entity: IEntity): void {
+    console.log(
+      `[ClientEntityManager-Add]Adding entity: ${JSON.stringify(entity)}`
+    );
+    if (cliententities.has(entity.id)) {
       throw new Error(`Entity with id ${entity.id} already exists.`);
     }
-    this.cliententities.set(entity.id, entity);
+    cliententities.set(entity.id, entity);
     if (entity.type === "blip") {
-      EntityBlip.create(entity);
+      EntityBlip.add(entity);
     } else if (entity.type === "object") {
       emitNet("objectAdd", entity);
     } else if (entity.type === "marker") {
@@ -21,41 +24,32 @@ export class ClientEntityManager {
     }
   }
 
-  remove(id: string): void {
-    if (!this.cliententities.has(id)) {
+  static remove(id: string): void {
+    if (!cliententities.has(id)) {
       throw new Error(`Entity with id ${id} does not exist.`);
     }
-    this.cliententities.delete(id);
+    cliententities.delete(id);
   }
-  update(entity: IEntity): void {
-    if (!this.cliententities.has(entity.id)) {
+  static update(entity: IEntity): void {
+    if (!cliententities.has(entity.id)) {
       throw new Error(`Entity with id ${entity.id} does not exist.`);
     }
-    this.cliententities.set(entity.id, entity);
+    cliententities.set(entity.id, entity);
   }
-  getEntity(id: string): IEntity | undefined {
-    return this.cliententities.get(id);
+  static getEntity(id: string): IEntity | undefined {
+    return cliententities.get(id);
   }
 
-  getAllEntities(): Array<IEntity> {
-    return Array.from(this.cliententities.values());
+  static getAllEntities(): Array<IEntity> {
+    return Array.from(cliententities.values());
   }
-  getEntitiesByType(type: string): Array<IEntity> {
-    return Array.from(this.cliententities.values()).filter(
+  static getEntitiesByType(type: string): Array<IEntity> {
+    return Array.from(cliententities.values()).filter(
       (entity) => entity.type === type
     );
   }
 }
 
-onNet(
-  EVENTS.Entity.Add,
-  ClientEntityManager.prototype.add.bind(ClientEntityManager)
-);
-onNet(
-  EVENTS.Entity.Remove,
-  ClientEntityManager.prototype.remove.bind(ClientEntityManager)
-);
-onNet(
-  EVENTS.Entity.Update,
-  ClientEntityManager.prototype.update.bind(ClientEntityManager)
-);
+onNet(EVENTS.Entity.Add, ClientEntityManager.add);
+onNet(EVENTS.Entity.Remove, ClientEntityManager.remove);
+onNet(EVENTS.Entity.Update, ClientEntityManager.update);
