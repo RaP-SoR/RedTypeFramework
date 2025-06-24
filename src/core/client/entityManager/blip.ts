@@ -1,5 +1,5 @@
 import { CVector3 } from "@shared/CVector3";
-import { IEntity } from "@shared/interfaces/IEntity";
+import { IEntity, IEntityBlipData } from "@shared/interfaces/IEntity";
 import { ClientEntityManager } from "./entityManager";
 
 let createdBlips: Map<string, IEntity> = new Map();
@@ -68,14 +68,15 @@ export class EntityBlip {
     }
 
     if (blip && blipId) {
+      const data = blip.data as IEntityBlipData;
       console.log(`Updating blip ${blipId} for entity ${id}`);
-      SetBlipSprite(blipId, blip.data?.sprite);
+      SetBlipSprite(blipId, data.sprite);
       SetBlipScale(blipId, blip.scale || 1.0);
-      SetBlipAsShortRange(blipId, blip.data?.shortRange || true);
-      SetBlipColour(blipId, blip.data?.color);
-      SetBlipAlpha(blipId, blip.data?.alpha || 255);
-      SetBlipCrew(blipId, blip.data?.crew || false);
-      SetBlipDisplay(blipId, blip.data?.display || 2);
+      SetBlipAsShortRange(blipId, data.shortRange || true);
+      SetBlipColour(blipId, data.color || 0);
+      SetBlipAlpha(blipId, data.alpha || 255);
+      SetBlipCrew(blipId, data.crew || false);
+      SetBlipDisplay(blipId, data.display || 2);
 
       createdBlips.set(id, blip);
     }
