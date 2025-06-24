@@ -2,9 +2,10 @@ import { ServerCore } from "./server-core";
 import { EntityManager } from "./entity/entityManager";
 import { ServerConfig } from "../shared/interfaces/ServerConfig";
 import { logError, logInfo } from "../shared/logs";
-import { IBaseModel } from "../shared/interfaces/IBaseModel";
 import { IEntity } from "../shared/interfaces/IEntity";
 import { CVector3 } from "../shared/CVector3";
+
+//import './speedcam/cmds'
 
 const serverConfig: ServerConfig = {
   debug: GetConvar("ctf:debug", "false") === "true",
@@ -121,9 +122,6 @@ async function test() {
 }
 */
 
-setImmediate(() => {
-  emit("chat:addSuggestion", "/tblip", "Add Test Blip", []);
-});
 
 RegisterCommand(
   "tblip",
