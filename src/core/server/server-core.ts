@@ -2,10 +2,13 @@ import { ServerConfig } from "@shared/interfaces/ServerConfig";
 import { DatabaseFactory } from "./db/DatabaseFactory";
 import { IDatabaseProvider } from "@shared/interfaces/IDatabaseProvider";
 import { logError, logInfo } from "@shared/logs";
+import { PlayerManager } from "./player/PlayerManager";
+import { IPlayerManager } from "../shared/interfaces/IPlayerManager";
 
 export class ServerCore {
   private config: ServerConfig;
   private dbProvider: IDatabaseProvider | null = null;
+  private playerManager!: IPlayerManager;
 
   constructor(config: ServerConfig) {
     this.config = config;
@@ -15,6 +18,7 @@ export class ServerCore {
   public async start(): Promise<void> {
     logInfo("Starting CFXType Framework Server...");
     await this.initializeDatabase();
+    this.initializePlayerManager();
     logInfo("Server started successfully");
   }
 
@@ -52,6 +56,15 @@ export class ServerCore {
       logError("Failed to connect to database:", error);
       throw error;
     }
+  }
+
+  private initializePlayerManager(): void {
+    logInfo("Initializing Player Manager...");
+    this.playerManager = PlayerManager.getInstance();
+    logInfo("Player Manager initialized");
+  }
+  public getPlayerManager(): IPlayerManager {
+    return this.playerManager;
   }
 
   public isDebugMode(): boolean {

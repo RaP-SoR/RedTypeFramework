@@ -20,7 +20,7 @@ const serverConfig: ServerConfig = {
 };
 
 const server = new ServerCore(serverConfig);
-/*
+
 if (serverConfig.database.provider === "cfxmongodb") {
   onNet("cfx-mongodb:connected", () => {
     logInfo("Ressource gestartet by Cfx-MongoDB, initialisiere Server...");
@@ -48,23 +48,7 @@ if (serverConfig.database.provider === "cfxmongodb") {
     }
   });
 }
-on("onResourceStop", (resourceName: string) => {
-  if (resourceName === GetCurrentResourceName()) {
-    logInfo("Ressource wird gestoppt, fahre Server herunter...");
-    server
-      .stop()
-      .then(() =>
-        logInfo("CFXType Framework Server erfolgreich heruntergefahren")
-      )
-      .catch((err) =>
-        logError(
-          "Fehler beim Herunterfahren des CFXType Framework Servers",
-          err
-        )
-      );
-  }
-});
-*/
+
 on("onResourceStart", (resourceName: string) => {
   if (resourceName === GetCurrentResourceName()) {
     logInfo("Ressource gestartet, initialisiere Server...");
@@ -95,10 +79,11 @@ on("onResourceStop", (resourceName: string) => {
       );
   }
 });
+
 exports("ctf:getServer", () => server);
 
-/// Test Code
-
+// Test Code komplett deaktiviert wegen "Awaiting Scripts" Problem
+/*
 const timer = setTimeout(() => {
   test();
 }, 5000);
@@ -139,35 +124,6 @@ async function test() {
     .getRepository<User>("users")
     .findOne({ username: "testuser" });
 
-  /*
-  if (!userExist) {
-    console.log("Benutzer nicht gefunden, erstelle neuen Benutzer...");
-    const user = await db.getRepository<User>("users").insert({
-      username: "testuser1",
-      password: "testpassword",
-      email: "",
-      sort: "test",
-    });
-    console.log("Neuer Benutzer erstellt:", JSON.stringify(user));
-  } else {
-    console.log("Benutzer gefunden, ID:", userExist.id);
-    console.log("Aktualisiere Benutzer...");
-
-    // Alternativ direkt nach Benutzernamen statt ID aktualisieren
-    const updateUser = await db
-      .getRepository<User>("users")
-      .update(userExist.id, {
-        password: "newpassword" + Math.random().toString(36).substring(7),
-        email: "mail_" + new Date().toISOString(),
-      });
-
-    if (updateUser) {
-      logInfo("Benutzer aktualisiert: " + JSON.stringify(updateUser));
-    } else {
-      logError("Fehler beim Aktualisieren des Benutzers");
-    }
-  }*/
-
   const count = await db
     .getRepository<User>("users")
     .count({ username: "%test%" });
@@ -182,3 +138,4 @@ async function test() {
     logInfo("Benutzer gelöscht");
   }
 }
+*/
