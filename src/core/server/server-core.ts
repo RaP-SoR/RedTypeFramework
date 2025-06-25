@@ -2,13 +2,12 @@ import { ServerConfig } from "@shared/interfaces/ServerConfig";
 import { DatabaseFactory } from "./db/DatabaseFactory";
 import { IDatabaseProvider } from "@shared/interfaces/IDatabaseProvider";
 import { logError, logInfo } from "@shared/logs";
-import { PlayerManager } from "./player/PlayerManager";
-import { IPlayerManager } from "../shared/interfaces/IPlayerManager";
+import { DeathHandler } from "./player/deathHandler";
+import { SpawnHandler } from "./player/spawnHandler";
 
 export class ServerCore {
   private config: ServerConfig;
   private dbProvider: IDatabaseProvider | null = null;
-  private playerManager!: IPlayerManager;
 
   constructor(config: ServerConfig) {
     this.config = config;
@@ -18,7 +17,8 @@ export class ServerCore {
   public async start(): Promise<void> {
     logInfo("Starting CFXType Framework Server...");
     await this.initializeDatabase();
-    this.initializePlayerManager();
+    SpawnHandler.getInstance();
+    DeathHandler.getInstance();
     logInfo("Server started successfully");
   }
 
@@ -58,15 +58,7 @@ export class ServerCore {
     }
   }
 
-  private initializePlayerManager(): void {
-    logInfo("Initializing Player Manager...");
-    this.playerManager = PlayerManager.getInstance();
-    logInfo("Player Manager initialized");
-  }
-  public getPlayerManager(): IPlayerManager {
-    return this.playerManager;
-  }
-
+ 
   public isDebugMode(): boolean {
     return this.config.debug;
   }
