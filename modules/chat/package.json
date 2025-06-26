@@ -1,0 +1,28 @@
+{
+  "name": "example-complex",
+  "version": "1.0.0",
+  "description": "Beispiel für ein komplexes CTF-Modul mit Server/Client/Shared/UI Struktur",
+  "main": "server/index.ts",
+  "scripts": {
+    "build": "echo 'Module wird vom Framework-Build-System kompiliert'"
+  },
+  "keywords": ["ctf", "framework", "module", "example"],
+  "author": "CTF Framework",
+  "license": "MIT",
+  "dependencies": {},
+  "ctfModule": {
+    "type": "complex",
+    "structure": {
+      "server": "server/index.ts",
+      "client": "client/index.ts", 
+      "shared": "shared/index.ts",
+      "ui": "ui/index.ts"
+    },
+    "features": [
+      "server-side",
+      "client-side", 
+      "ui-components",
+      "shared-types"
+    ]
+  }
+}

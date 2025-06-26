@@ -2,7 +2,7 @@ import { markRaw, reactive } from 'vue';
 
 export const loadUIComponents = async () => {
   const components: Record<string, any> = reactive({});
-  
+
   const modules = import.meta.glob('../views/**/*.vue');
   const disabledModules = new Set();
 
@@ -15,6 +15,7 @@ export const loadUIComponents = async () => {
     }
   }
 
+  // Load core UI components
   for (const path in modules) {
     try {
       const moduleFolder = path.split('/')[path.split('/').indexOf('views') + 1];
@@ -26,7 +27,7 @@ export const loadUIComponents = async () => {
       const pathSegments = path.split('/');
       const fileName = pathSegments.pop()?.replace('.vue', '');
       const folderName = pathSegments[pathSegments.length - 1];
-      
+
       if (fileName === 'index') {
         const module = await modules[path]() as { default: any };
         components[folderName] = markRaw(module.default);
@@ -42,6 +43,15 @@ export const loadUIComponents = async () => {
       console.error(`Fehler beim Laden der UI-Komponente aus ${path}:`, error);
     }
   }
-  
+
+  // Load module UI components
+  try {
+    const { moduleComponents } = await import('../moduleComponents');
+    Object.assign(components, moduleComponents);
+    console.log('Module UI components loaded:', Object.keys(moduleComponents));
+  } catch (error) {
+    console.warn('No module UI components found or error loading:', error);
+  }
+
   return components;
 };

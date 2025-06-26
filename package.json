@@ -18,7 +18,8 @@
     "dev": "concurrently \"yarn watch\" \"yarn workspace cfx-ui dev\"",
     "watch": "node build.js",
     "build:core": "node build.js",
-    "build:ui": "yarn workspace cfx-ui build",
+    "build:ui": "node build.js && yarn workspace cfx-ui build",
+    "build:modules": "node build.js",
     "preview": "yarn workspace cfx-ui preview",
     "type-check": "vue-tsc --noEmit && yarn workspace cfx-ui type-check"
   },

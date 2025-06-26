@@ -22,7 +22,7 @@ export default defineConfig({
       "@shared": resolve(__dirname, "src/core/shared/"),
       "@client": resolve(__dirname, "src/core/client/"),
       "@server": resolve(__dirname, "src/core/server/"),
-      "@plugins": resolve(__dirname, "modules/")
+      "@modules": resolve(__dirname, "modules/")
     }
   }
 });

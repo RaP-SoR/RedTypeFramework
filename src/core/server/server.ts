@@ -1,6 +1,7 @@
 import { ServerCore } from "./server-core";
 import { ServerConfig } from "../shared/interfaces/ServerConfig";
 import { logError, logInfo } from "../shared/logs";
+import { CTFCore } from "./CTFCore";
 //import './speedcam/cmds'
 
 const serverConfig: ServerConfig = {
@@ -17,6 +18,8 @@ const serverConfig: ServerConfig = {
 };
 
 const server = new ServerCore(serverConfig);
+const ctfCore = CTFCore.getInstance();
+ctfCore.setServerCore(server);
 
 if (serverConfig.database.provider === "cfxmongodb") {
   onNet("cfx-mongodb:connected", () => {
@@ -64,4 +67,6 @@ on("onResourceStop", (resourceName: string) => {
 });
 
 exports("ctf:getServer", () => server);
+exports("ctf:getCore", () => ctfCore);
+exports("ctf:getCTFCore", () => ctfCore);
 
