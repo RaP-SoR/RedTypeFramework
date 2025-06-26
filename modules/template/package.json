@@ -1,7 +1,7 @@
 {
-  "name": "example-complex",
+  "name": "template",
   "version": "1.0.0",
-  "description": "Beispiel für ein komplexes CTF-Modul mit Server/Client/Shared/UI Struktur",
+  "description": "Beispiel/ Vorlage für ein CTF-Modul mit Server/Client/Shared/UI Struktur",
   "main": "server/index.ts",
   "scripts": {
     "build": "echo 'Module wird vom Framework-Build-System kompiliert'"

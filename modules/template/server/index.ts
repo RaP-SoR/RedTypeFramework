@@ -1,11 +1,11 @@
 import { IModule, IModuleInfo } from "../../../src/core/shared/interfaces/IModule";
 import { ExampleConfig, ExampleUser, EXAMPLE_EVENTS } from "../shared/index";
 
-export class ExampleComplexModule implements IModule {
+export class ExampleTemplateModule implements IModule {
   public info: IModuleInfo = {
-    name: "example-complex",
+    name: "template",
     version: "1.0.0",
-    description: "Beispiel für ein komplexes Modul mit erweiterter Struktur",
+    description: "Beispiel für ein Modul mit erweiterter Struktur",
     author: "CTF Framework",
     dependencies: [],
     requiredCoreVersion: "0.0.1"
@@ -96,4 +96,4 @@ export class ExampleComplexModule implements IModule {
 }
 
 // Export the module
-export default new ExampleComplexModule();
+export default new ExampleTemplateModule();

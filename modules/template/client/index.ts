@@ -4,7 +4,7 @@ class ExampleComplexClient {
   private users: Map<string, ExampleUser> = new Map();
 
   public init(): void {
-    console.log("[example-complex] Client module initialized");
+    console.log("[template] Client module initialized");
     this.registerEvents();
     this.registerCommands();
   }
@@ -13,7 +13,7 @@ class ExampleComplexClient {
     // Listen for user join events
     onNet(EXAMPLE_EVENTS.USER_JOIN, (user: ExampleUser) => {
       this.users.set(user.id, user);
-      console.log("[example-complex] User joined:", user.name);
+      console.log("[template] User joined:", user.name);
       
       // Show notification
       this.showNotification(`${user.name} joined the server`, "success");
@@ -24,7 +24,7 @@ class ExampleComplexClient {
       const user = this.users.get(userId);
       if (user) {
         this.users.delete(userId);
-        console.log("[example-complex] User left:", user.name);
+        console.log("[template] User left:", user.name);
         
         // Show notification
         this.showNotification(`${user.name} left the server`, "info");
@@ -33,14 +33,14 @@ class ExampleComplexClient {
 
     // Listen for config updates
     onNet(EXAMPLE_EVENTS.CONFIG_UPDATE, (config: any) => {
-      console.log("[example-complex] Config updated:", config);
+      console.log("[template] Config updated:", config);
     });
   }
 
   private registerCommands(): void {
     RegisterCommand("example:list", () => {
       const userList = Array.from(this.users.values());
-      console.log("[example-complex] Users:", userList);
+      console.log("[template] Users:", userList);
       
       userList.forEach((user, index) => {
         setTimeout(() => {
@@ -50,7 +50,7 @@ class ExampleComplexClient {
     }, false);
 
     RegisterCommand("example:ui", () => {
-      console.log("[example-complex] Opening UI...");
+      console.log("[template] Opening UI...");
       // Trigger UI opening (this would integrate with the CTF UI system)
       SendNUIMessage({
         type: "showUI",
@@ -64,7 +64,7 @@ class ExampleComplexClient {
 
   private showNotification(message: string, type: "success" | "error" | "info" = "info"): void {
     // This would integrate with the framework's notification system
-    console.log(`[example-complex] ${type.toUpperCase()}: ${message}`);
+    console.log(`[template] ${type.toUpperCase()}: ${message}`);
     
     // Example FiveM notification
     SetNotificationTextEntry("STRING");

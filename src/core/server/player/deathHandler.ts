@@ -4,10 +4,10 @@ import { SpawnData, SpawnType } from "@/core/shared/interfaces/Spawn";
 export class DeathHandler {
     private static instance: DeathHandler;
     
-    private readonly DEFAULT_SPAWN: SpawnData = {
+    private readonly DEFAULT_DEATH_SPAWN: SpawnData = {
         pos:  new CVector3(213.0, -804.0, 31.0),
         heading: 180.0,
-        dimension: "world",
+        dimension: 0,
         type: SpawnType.DEFAULT,
         camBehind: false,
         data: {}
@@ -41,6 +41,6 @@ export class DeathHandler {
 
     private async getPlayerSpawnLocation(source: number): Promise<SpawnData> {
         // TODO: Hier später Ihre Logik für:
-        return this.DEFAULT_SPAWN;
+        return this.DEFAULT_DEATH_SPAWN;
     }
 }
