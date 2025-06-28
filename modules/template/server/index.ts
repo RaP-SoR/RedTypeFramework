@@ -1,4 +1,7 @@
-import { IModule, IModuleInfo } from "../../../src/core/shared/interfaces/IModule";
+import {
+  IModule,
+  IModuleInfo,
+} from "../../../src/core/shared/interfaces/IModule";
 import { ExampleConfig, ExampleUser, EXAMPLE_EVENTS } from "../shared/index";
 
 export class ExampleTemplateModule implements IModule {
@@ -8,14 +11,14 @@ export class ExampleTemplateModule implements IModule {
     description: "Beispiel für ein Modul mit erweiterter Struktur",
     author: "CTF Framework",
     dependencies: [],
-    requiredCoreVersion: "0.0.1"
+    requiredCoreVersion: "0.0.1",
   };
 
   private users: Map<string, ExampleUser> = new Map();
   private config: ExampleConfig = {
     enabled: true,
     maxUsers: 100,
-    features: ["chat", "commands", "ui"]
+    features: ["chat", "commands", "ui"],
   };
 
   public async onLoad(): Promise<void> {
@@ -45,30 +48,33 @@ export class ExampleTemplateModule implements IModule {
 
   private registerEvents(): void {
     // Player joining
-    onNet(EXAMPLE_EVENTS.USER_JOIN, (source: number, userData: Partial<ExampleUser>) => {
-      const user: ExampleUser = {
-        id: `player_${source}`,
-        name: userData.name || `Player ${source}`,
-        level: userData.level || 1,
-        permissions: userData.permissions || []
-      };
-      
-      this.users.set(user.id, user);
-      console.log(`[${this.info.name}] User joined:`, user.name);
-      
-      // Notify all clients
-      emitNet(EXAMPLE_EVENTS.USER_JOIN, -1, user);
-    });
+    onNet(
+      EXAMPLE_EVENTS.USER_JOIN,
+      (source: number, userData: Partial<ExampleUser>) => {
+        const user: ExampleUser = {
+          id: `player_${source}`,
+          name: userData.name || `Player ${source}`,
+          level: userData.level || 1,
+          permissions: userData.permissions || [],
+        };
+
+        this.users.set(user.id, user);
+        console.log(`[${this.info.name}] User joined:`, user.name);
+
+        // Notify all clients
+        emitNet(EXAMPLE_EVENTS.USER_JOIN, -1, user);
+      }
+    );
 
     // Player leaving
     onNet(EXAMPLE_EVENTS.USER_LEAVE, (source: number) => {
       const userId = `player_${source}`;
       const user = this.users.get(userId);
-      
+
       if (user) {
         this.users.delete(userId);
         console.log(`[${this.info.name}] User left:`, user.name);
-        
+
         // Notify all clients
         emitNet(EXAMPLE_EVENTS.USER_LEAVE, -1, userId);
       }
@@ -76,22 +82,37 @@ export class ExampleTemplateModule implements IModule {
   }
 
   private registerCommands(): void {
-    RegisterCommand("example:users", (source: number, args: string[]) => {
-      const userList = Array.from(this.users.values());
-      console.log(`[${this.info.name}] Current users (${userList.length}):`, userList);
-      
-      emitNet("chat:addMessage", source, {
-        args: [`Users online: ${userList.length}`]
-      });
-    }, false);
+    RegisterCommand(
+      "example:users",
+      (source: number, args: string[]) => {
+        const userList = Array.from(this.users.values());
+        console.log(
+          `[${this.info.name}] Current users (${userList.length}):`,
+          userList
+        );
 
-    RegisterCommand("example:config", (source: number, args: string[]) => {
-      console.log(`[${this.info.name}] Current config:`, this.config);
-      
-      emitNet("chat:addMessage", source, {
-        args: [`Max users: ${this.config.maxUsers}, Features: ${this.config.features.join(", ")}`]
-      });
-    }, false);
+        emitNet("chat:addMessage", source, {
+          args: [`Users online: ${userList.length}`],
+        });
+      },
+      false
+    );
+
+    RegisterCommand(
+      "example:config",
+      (source: number, args: string[]) => {
+        console.log(`[${this.info.name}] Current config:`, this.config);
+
+        emitNet("chat:addMessage", source, {
+          args: [
+            `Max users: ${
+              this.config.maxUsers
+            }, Features: ${this.config.features.join(", ")}`,
+          ],
+        });
+      },
+      false
+    );
   }
 }
 

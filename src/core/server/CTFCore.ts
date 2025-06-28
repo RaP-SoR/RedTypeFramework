@@ -3,22 +3,23 @@ import { ModuleManager } from "./ModuleManager";
 import { EntityManager } from "./entity/entityManager";
 import { DatabaseFactory } from "./db/DatabaseFactory";
 import { logInfo, logError, logWarning } from "@shared/logs";
+import { ServerRPC } from "./RPC";
+import * as playerUtils from "./player/utils";
 
 export interface ICTFCore {
-  // Core System Access
   getServerCore(): ServerCore;
   getModuleManager(): ModuleManager;
   getEntityManager(): typeof EntityManager;
   getDatabaseFactory(): typeof DatabaseFactory;
-  
-  // Utility Functions
+  RPC(): typeof ServerRPC;
   log: {
     info: typeof logInfo;
     error: typeof logError;
     warning: typeof logWarning;
   };
-  
-  // Framework Info
+  player: {
+    utils: typeof playerUtils;
+  };
   getVersion(): string;
   isDebugMode(): boolean;
 }
@@ -30,6 +31,7 @@ export class CTFCore implements ICTFCore {
 
   private constructor() {
     this.moduleManager = ModuleManager.getInstance();
+    ServerRPC.init();
   }
 
   public static getInstance(): CTFCore {
@@ -62,12 +64,18 @@ export class CTFCore implements ICTFCore {
     return DatabaseFactory;
   }
 
+  public RPC(): typeof ServerRPC {
+    return ServerRPC;
+  }
+
   public log = {
     info: logInfo,
     error: logError,
     warning: logWarning,
   };
-
+  public player = {
+    utils: playerUtils,
+  };
   public getVersion(): string {
     return GetResourceMetadata(GetCurrentResourceName(), "version", 0);
   }
@@ -77,7 +85,6 @@ export class CTFCore implements ICTFCore {
   }
 }
 
-// Global export for modules
-export function getCTFCore(): ICTFCore {
+export function getCTF(): ICTFCore {
   return CTFCore.getInstance();
 }

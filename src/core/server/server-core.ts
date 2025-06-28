@@ -10,10 +10,12 @@ export class ServerCore {
   private config: ServerConfig;
   private dbProvider: IDatabaseProvider | null = null;
   private moduleManager: ModuleManager;
+  private static instance: ServerCore | null = null;
 
   constructor(config: ServerConfig) {
     this.config = config;
     this.moduleManager = ModuleManager.getInstance();
+    ServerCore.instance = this;
     logInfo("CFXType Framework Server initialized");
   }
 
@@ -22,19 +24,15 @@ export class ServerCore {
     await this.initializeDatabase();
     SpawnHandler.getInstance();
     DeathHandler.getInstance();
-    
-    // Initialize modules
+
     logInfo("Initializing module system...");
-    // In a real implementation, you would load modules from a directory here
-    // await this.moduleManager.loadModulesFromDirectory("modules/");
-    
+
     logInfo("Server started successfully");
   }
 
   public async stop(): Promise<void> {
     logInfo("Stopping Server...");
 
-    // Shutdown modules first
     await this.moduleManager.shutdownAllModules();
 
     if (this.dbProvider && (await this.dbProvider.isConnected())) {
@@ -53,7 +51,21 @@ export class ServerCore {
     }
     return this.dbProvider;
   }
+  public getConfig(): ServerConfig {
+    return this.config;
+  }
+  public static getInstance(): ServerCore {
+    if (!ServerCore.instance) {
+      throw new Error(
+        "ServerCore not initialized. Please create ServerCore instance first."
+      );
+    }
+    return ServerCore.instance;
+  }
 
+  public static hasInstance(): boolean {
+    return ServerCore.instance !== null;
+  }
   private async initializeDatabase(): Promise<void> {
     if (!this.config.database) {
       throw new Error("Database configuration missing");
@@ -74,7 +86,6 @@ export class ServerCore {
     }
   }
 
- 
   public isDebugMode(): boolean {
     return this.config.debug;
   }

@@ -2,20 +2,41 @@
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "preserve",
-    "lib": ["DOM", "ES2022"],
+    "lib": [
+      "DOM",
+      "ES2022"
+    ],
     "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@views/*": ["src/views/*"],
-      "@stores/*": ["src/stores/*"],
-      "@utils/*": ["src/utils/*"],
-      "@assets/*": ["src/assets/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "@stores/*": [
+        "src/stores/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@api": [
+        "src/api/axios.ts"
+      ],
     },
     "resolveJsonModule": true,
-    "types": ["vite/client", "node"],
+    "types": [
+      "vite/client",
+      "node"
+    ],
     "allowJs": true,
     "strict": true,
     "strictNullChecks": true,
@@ -35,8 +56,14 @@
     "./src/**/*.vue",
     "./src/typed-router.d.ts"
   ],
-  
-
-  "exclude": ["dist", "node_modules", "cypress"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "cypress"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

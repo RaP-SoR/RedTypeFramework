@@ -5,4 +5,5 @@ export interface ServerConfig {
   debugDatabase?: boolean;
   serverVersion: string;
   database: DbConfig;
+  chatEvent: string; // Default: "chat:addMessage"
 }

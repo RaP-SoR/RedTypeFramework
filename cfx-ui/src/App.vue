@@ -1,26 +1,26 @@
 <template>
-   <v-app theme="dark">
-      <UIListDev
-         v-if="isDev"
-         :uiComponents="uiComponents"
-         :activeUIs="activeUIs"
-         :isDev="isDev"
-         @toggleDevUI="toggleDevUI"
-      />
-      <UIRender
-         :uiComponents="uiComponents"
-         :activeUIs="activeUIs"
-         :isDev="isDev"
-         @closeUI="closeUI"
-      />
-   </v-app>
+  <v-app theme="dark">
+    <UIListDev
+      v-if="isDev"
+      :uiComponents="uiComponents"
+      :activeUIs="activeUIs"
+      :isDev="isDev"
+      @toggleDevUI="toggleDevUI"
+    />
+    <UIRender
+      :uiComponents="uiComponents"
+      :activeUIs="activeUIs"
+      :isDev="isDev"
+      @closeUI="closeUI"
+    />
+  </v-app>
 </template>
 
 <script setup lang="ts">
 declare global {
-   interface Window {
-      invokeNative?: any;
-   }
+  interface Window {
+    invokeNative?: any;
+  }
 }
 import { onMounted, onUnmounted, reactive } from "vue";
 import { VApp } from "vuetify/components";
@@ -40,145 +40,155 @@ const activeUIs = reactive<Record<string, UIConfig>>({});
 const uiComponents = reactive<Record<string, any>>({});
 
 const openUI = (config: UIConfig): string => {
-   const type = config.type;
+  const type = config.type;
 
-   if (config.exclusive && config.exclusive.length > 0) {
-      Object.entries(activeUIs).forEach(([uiType, ui]) => {
-         if (config.exclusive?.includes(uiType)) {
-            delete activeUIs[uiType];
-         }
-      });
-   }
-
-   let shouldClose = false;
-   Object.values(activeUIs).forEach((ui) => {
-      if (ui.exclusive?.includes(type)) {
-         shouldClose = true;
+  if (config.exclusive && config.exclusive.length > 0) {
+    Object.entries(activeUIs).forEach(([uiType, ui]) => {
+      if (config.exclusive?.includes(uiType)) {
+        delete activeUIs[uiType];
       }
-   });
+    });
+  }
 
-   if (shouldClose) {
-      return "";
-   }
+  let shouldClose = false;
+  Object.values(activeUIs).forEach((ui) => {
+    if (ui.exclusive?.includes(type)) {
+      shouldClose = true;
+    }
+  });
 
-   activeUIs[type] = {
-      ...config,
-   };
+  if (shouldClose) {
+    return "";
+  }
 
-   return type;
+  activeUIs[type] = {
+    ...config,
+  };
+
+  return type;
 };
 
 const closeUI = (type: string) => {
-   if (activeUIs[type]) {
-      delete activeUIs[type];
-   }
+  if (activeUIs[type]) {
+    delete activeUIs[type];
+  }
 
-   if (Object.keys(activeUIs).length === 0 && window.invokeNative && !isDev) {
-      fetch(`${process.env.BASE_URL}/closeUI`, {
-         method: "POST",
-         body: JSON.stringify({}),
-      });
-   }
+  if (Object.keys(activeUIs).length === 0 && window.invokeNative && !isDev) {
+    fetch(`${process.env.BASE_URL}/closeUI`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+  }
 };
 const closeAllUIs = () => {
-   Object.keys(activeUIs).forEach((type) => delete activeUIs[type]);
+  Object.keys(activeUIs).forEach((type) => delete activeUIs[type]);
 
-   if (window.invokeNative && !isDev) {
-      fetch(`${process.env.BASE_URL}/closeUI`, {
-         method: "POST",
-         body: JSON.stringify({}),
-      });
-   }
+  if (window.invokeNative && !isDev) {
+    fetch(`${process.env.BASE_URL}/closeUI`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+  }
 };
 
 const toggleDevUI = (type: string) => {
-   if (activeUIs[type]) {
-      closeUI(type);
-   } else {
-      openUI({
-         type,
-         title: `${type.charAt(0).toUpperCase() + type.slice(1)} UI`,
-         showControls: true,
-      });
-   }
+  if (activeUIs[type]) {
+    closeUI(type);
+  } else {
+    openUI({
+      type,
+      title: `${type.charAt(0).toUpperCase() + type.slice(1)} UI`,
+      showControls: true,
+    });
+  }
 };
 
 const setPlayerID = (id: number) => {
-   globalStore.$state.playerID = id;
+  globalStore.$state.playerID = id;
+};
+
+const updatePlayer = (data: any) => {
+  return (globalStore.$state.character = data);
 };
 
 onMounted(async () => {
-   const loadedComponents = await loadUIComponents();
-   Object.entries(loadedComponents).forEach(([name, component]) => {
-      uiComponents[name] = component;
-   });
+  const loadedComponents = await loadUIComponents();
+  Object.entries(loadedComponents).forEach(([name, component]) => {
+    uiComponents[name] = component;
+  });
 
-   if (isDev) {
-      openUI({ type: "demo", title: "Demo UI", showControls: true });
-      setPlayerID(1);
-   }
+  if (isDev) {
+    openUI({ type: "demo", title: "Demo UI", showControls: true });
+    setPlayerID(1);
+  }
 
-   eventManager.on("exitUI", (data: MessageData) => {
-      const uiType = data.payload?.[0] as string | undefined;
+  eventManager.on("exitUI", (data: MessageData) => {
+    const uiType = data.payload?.[0] as string | undefined;
 
-      if (uiType && activeUIs[uiType]) {
-         closeUI(uiType);
+    if (uiType && activeUIs[uiType]) {
+      closeUI(uiType);
+    } else {
+      closeAllUIs();
+    }
+  });
+
+  eventManager.on("openUI", (data: MessageData) => {
+    const config = data.payload?.[0] as UIConfig | undefined;
+
+    if (config && config.type && uiComponents[config.type]) {
+      openUI(config);
+    }
+  });
+
+  eventManager.on("toggleUI", (data: MessageData) => {
+    const uiType = data.payload?.[0] as string | undefined;
+    const props = data.payload?.[1] as Record<string, any> | undefined;
+
+    if (uiType && uiComponents[uiType]) {
+      if (activeUIs[uiType]) {
+        closeUI(uiType);
       } else {
-         closeAllUIs();
+        openUI({
+          type: uiType,
+          props: props,
+          showControls: true,
+        });
       }
-   });
+    }
+  });
 
-   eventManager.on("openUI", (data: MessageData) => {
-      const config = data.payload?.[0] as UIConfig | undefined;
-
-      if (config && config.type && uiComponents[config.type]) {
-         openUI(config);
-      }
-   });
-
-   eventManager.on("toggleUI", (data: MessageData) => {
-      const uiType = data.payload?.[0] as string | undefined;
-      const props = data.payload?.[1] as Record<string, any> | undefined;
-
-      if (uiType && uiComponents[uiType]) {
-         if (activeUIs[uiType]) {
-            closeUI(uiType);
-         } else {
-            openUI({
-               type: uiType,
-               props: props,
-               showControls: true,
-            });
-         }
-      }
-   });
-
-   eventManager.on("setPlayerID", (data: MessageData) => {
-      if (data.data !== undefined) {
-         setPlayerID(data.data);
-      }
-   });
+  eventManager.on("setPlayerID", (data: MessageData) => {
+    if (data.data !== undefined) {
+      setPlayerID(data.data);
+    }
+  });
+  eventManager.on("updateCharacter", (data: MessageData) => {
+    if (data.data !== undefined) {
+      updatePlayer(data.data);
+    }
+  });
 });
 
 onUnmounted(() => {
-   eventManager.off("openUI");
-   eventManager.off("toggleUI");
-   eventManager.off("exitUI");
-   eventManager.off("setPlayerID");
+  eventManager.off("openUI");
+  eventManager.off("toggleUI");
+  eventManager.off("exitUI");
+  eventManager.off("setPlayerID");
+  eventManager.off("updatePlayer");
 });
 </script>
 
 <style>
 ::-webkit-scrollbar {
-   width: 0;
-   display: inline !important;
+  width: 0;
+  display: inline !important;
 }
 
 .v-application {
-   background: rgb(0, 0, 0, 0.5) !important;
+  background: rgb(0, 0, 0, 0.5) !important;
 }
 
 :root {
-   color-scheme: none !important;
+  color-scheme: none !important;
 }
 </style>

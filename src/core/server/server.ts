@@ -2,11 +2,11 @@ import { ServerCore } from "./server-core";
 import { ServerConfig } from "../shared/interfaces/ServerConfig";
 import { logError, logInfo } from "../shared/logs";
 import { CTFCore } from "./CTFCore";
-//import './speedcam/cmds'
 
 const serverConfig: ServerConfig = {
   debug: GetConvar("ctf:debug", "false") === "true",
   serverVersion: GetResourceMetadata(GetCurrentResourceName(), "version", 0),
+  chatEvent: "chat:addMessage", // Default chat event
   database: {
     provider: "cfxmongodb",
     host: GetConvar("ctf:db_host", "localhost"),
@@ -20,6 +20,9 @@ const serverConfig: ServerConfig = {
 const server = new ServerCore(serverConfig);
 const ctfCore = CTFCore.getInstance();
 ctfCore.setServerCore(server);
+
+// Import test modules after ServerCore is initialized
+import "./test/init";
 
 if (serverConfig.database.provider === "cfxmongodb") {
   onNet("cfx-mongodb:connected", () => {
@@ -68,5 +71,4 @@ on("onResourceStop", (resourceName: string) => {
 
 exports("ctf:getServer", () => server);
 exports("ctf:getCore", () => ctfCore);
-exports("ctf:getCTFCore", () => ctfCore);
-
+exports("ctf:getCTF", () => ctfCore);
